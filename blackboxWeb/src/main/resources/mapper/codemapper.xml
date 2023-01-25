@@ -1,0 +1,48 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.saehan.elevblack.blackbox.mapper.CodeMapper">
+    <sql id = "codeColumns">  
+        codeIdx,  codeNm,  insDate,  insUserId,  updDate,  updUserId
+      </sql>
+      <sql id = "codeDtlColumns">  
+        idx,codeDtlNm,codeIdx,insDate,insUserId,updDate,updUserId
+      </sql>
+        <select id="selectCodeList" parameterType="CodeDTO"  resultType="CodeDTO" >
+        SELECT
+          <include refid="codeColumns" />
+         FROM 
+         tb_code 
+         where 1=1
+         <if test = 'codeIdx != null'>
+             and codeIdx = #{codeIdx}
+         </if>
+        </select>
+        <insert  id="saveCode" parameterType="CodeDTO" >
+             insert into tb_code (codeIdx,codeNm) values (#{codeIdx},#{codeNm})
+         </insert>
+         <update  id="updateCode" parameterType="CodeDTO" >
+            UPDATE tb_code set condeNm = #{condeNm} where codeIdx = #{codeIdx}
+         </update>
+         <delete  id="deleteCode" parameterType="CodeDTO"  >
+            DELETE tb_code  where codeIdx = #{codeIdx}
+         </delete>
+       
+        <select id="selectCodeDtlList" parameterType="CodeDtlDTO"  resultType="CodeDtlDTO" >
+        SELECT
+          <include refid="codeDtlColumns" />
+         FROM 
+         tb_code_dtl 
+         where 1=1
+         <if test ='CodeIdx != null' >
+            and codeIdx = #{codeIdx}
+         </if>
+      </select>
+        <insert  id="saveCodeDtl" parameterType="CodeDtlDTO" >
+        insert into tb_code_dtl (codeIdx,codeNm) values (#{codeIdx},#{codeDtlNm})
+        </insert>
+        <update  id="updateCodeDtl" parameterType="CodeDtlDTO" >
+        UPDATE tb_code_dtl set condeDtlNm = #{codeDtlNm} where idx = #{idx}
+        </update>
+        <delete  id="deleteCodeDtl" parameterType="CodeDtlDTO"  >
+        DELETE tb_code_dtl  where idx = #{idx}
+        </delete>
+</mapper>

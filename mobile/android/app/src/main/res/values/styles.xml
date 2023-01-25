@@ -1,0 +1,29 @@
+<resources>
+  <style
+    name="AppTheme"
+    parent="Theme.AppCompat.DayNight.NoActionBar">
+    <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+    <item name="android:statusBarColor">@color/white</item>
+    <item name="android:windowBackground">@color/white</item>
+    <item name="android:windowLightStatusBar">true</item>
+  </style>
+  <!-- #MEMO, #BOOT_SPLASH -->
+  <!-- #MEMO, #TYPE -->
+  <!-- #MEMO, #MODULE: react-native-bootsplash -->
+  <!-- #ADD: -->
+  <style
+    name="basic_boot_splash_theme"
+    parent="Theme.SplashScreen">
+    <item name="windowSplashScreenBackground">@color/basic</item>
+    <item name="windowSplashScreenAnimatedIcon">@mipmap/basic_boot_splash_logo</item>
+    <item name="postSplashScreenTheme">@style/AppTheme</item>
+  </style>
+  <style
+    name="pro_boot_splash_theme"
+    parent="Theme.SplashScreen">
+    <item name="windowSplashScreenBackground">@color/white</item>
+    <item name="windowSplashScreenAnimatedIcon">@mipmap/pro_boot_splash_logo</item>
+    <item name="postSplashScreenTheme">@style/AppTheme</item>
+  </style>
+  <!--  -->
+</resources>

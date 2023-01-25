@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>Korea</string>
+    <key>CFBundleDisplayName</key>
+    <string>$(PRODUCT_NAME)</string>
+    <key>CFBundleExecutable</key>
+    <string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIdentifier</key>
+    <string>$(PACKAGE_NAME).$(TYPE)</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+    <key>CFBundleName</key>
+    <string>$(PRODUCT_NAME)</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleShortVersionString</key>
+    <string>$(VERSION_NAME)</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+    <key>CFBundleVersion</key>
+    <string>$(VERSION_CODE)</string>
+    <key>LSRequiresIPhoneOS</key>
+    <true />
+    <key>NSAppTransportSecurity</key>
+    <dict>
+      <key>NSExceptionDomains</key>
+      <dict>
+        <key>localhost</key>
+        <dict>
+          <key>NSExceptionAllowsInsecureHTTPLoads</key>
+          <true />
+        </dict>
+      </dict>
+    </dict>
+    <key>CFBundleURLTypes</key>
+    <array>
+      <!-- #MEMO, #MODULE: @react-native-google-signin/google-signin -->
+      <!-- #ADD: -->
+      <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>$(GOOGLE_REVERSED_CLIENT_ID)</string>
+        </array>
+      </dict>
+      <!--  -->
+      <!-- #MEMO, #MODULE: @react-native-seoul/kakao-login -->
+      <!-- #ADD: -->
+      <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>kakao$(KAKAO_NATIVE_APP_KEY)</string>
+        </array>
+      </dict>
+      <!-- #MEMO, #MODULE: @react-native-seoul/naver-login -->
+      <!-- #ADD: -->
+      <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>$(NAVER_URL_SCHEME)</string>
+        </array>
+      </dict>
+    </array>
+    <!-- #MEMO, #MODULE: @react-native-seoul/kakao-login -->
+    <!-- #ADD: -->
+    <key>KAKAO_APP_KEY</key>
+    <string>$(KAKAO_NATIVE_APP_KEY)</string>
+    <key>NAVER_URL_SCHEME</key>
+    <string>$(NAVER_URL_SCHEME)</string>
+    <!--  -->
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>kakaokompassauth</string>
+      <string>storykompassauth</string>
+      <string>kakaolink</string>
+    </array>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <!-- #MEMO, #MODULE: react-native-wifi-reborn -->
+    <!-- #MEMO, #MODULE: react-native-permissions -->
+    <!-- #BEFORE: -->
+    <!-- <string></string> -->
+    <!-- #AFTER: -->
+    <string>$(REQUEST_LOCATION_PERMISSION_MSG)</string>
+    <!--  -->
+    <!-- #MEMO, #MODULE: @react-native-firebase/messaging -->
+    <!-- #ADD: -->
+    <key>UIBackgroundModes</key>
+    <array>
+      <string>fetch</string>
+      <string>remote-notification</string>
+    </array>
+    <!--  -->
+    <!-- #MEMO, #MODULE: react-native-camera -->
+    <!-- #MEMO, #MODULE: react-native-permissions -->
+    <!-- #ADD: -->
+    <key>NSCameraUsageDescription</key>
+    <string>$(REQUEST_CAMERA_PERMISSION_MSG)</string>
+    <!--  -->
+    <!-- #MEMO, #MODULE: react-native-bluetooth-serial-next -->
+    <!-- #MEMO, #MODULE: react-native-permissions -->
+    <!-- #ADD: -->
+    <!-- #MEMO, #MODULE: react-native-image-picker -->
+    <!-- #MEMO, #MODULE: react-native-permissions -->
+    <!-- #ADD: -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>$(REQUEST_GALLERY_PERMISSION_MSG)</string>
+    <!--  -->
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>$(REQUEST_BLUETOOTH_PERMISSION_MSG)</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>$(REQUEST_BLUETOOTH_PERMISSION_MSG)</string>
+    <!--  -->
+    <key>UIAppFonts</key>
+    <array>
+      <!-- #MEMO, #MODULE: react-native-vector-icons -->
+      <!-- #ADD: -->
+      <string>AntDesign.ttf</string>
+      <string>Feather.ttf</string>
+      <string>NotoSansKR-Black.otf</string>
+      <string>NotoSansKR-Bold.otf</string>
+      <string>NotoSansKR-Medium.otf</string>
+      <string>NotoSansKR-Regular.otf</string>
+      <string>NotoSansKR-Light.otf</string>
+      <string>NotoSansKR-Thin.otf</string>
+      <!--  -->
+    </array>
+    <key>UILaunchStoryboardName</key>
+    <!-- #MEMO, #BOOT_SPLASH -->
+    <!-- #MEMO, #MODULE: react-native-bootsplash -->
+    <!-- #BEFORE: -->
+    <!-- <string>LaunchScreen</string> -->
+    <!-- #AFTER: -->
+    <string>$(TYPE)_boot_splash</string>
+    <!--  -->
+    <key>UIRequiredDeviceCapabilities</key>
+    <array>
+      <string>armv7</string>
+    </array>
+    <!-- #MEMO, #MODULE: @react-native-seoul/naver-login -->
+    <!-- #ADD: -->
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>naversearchapp</string>
+      <string>naversearchthirdlogin</string>
+    </array>
+    <!--  -->
+    <key>UIStatusBarStyle</key>
+    <string>UIStatusBarStyleDarkContent</string>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+      <string>UIInterfaceOrientationPortrait</string>
+    </array>
+    <key>UIViewControllerBasedStatusBarAppearance</key>
+    <false />
+  </dict>
+</plist>

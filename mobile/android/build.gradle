@@ -1,0 +1,83 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+buildscript {
+  ext {
+    buildToolsVersion = "31.0.0"
+    // #MEMO, #BOOT_SPLASH
+    // #MEMO, #MODULE: react-native-bootsplash
+    // #BEFORE:
+    // minSdkVersion = 21
+    // #AFTER:
+    minSdkVersion = 23
+    // 
+    compileSdkVersion = 31
+    targetSdkVersion = 31
+    if (System.properties["os.arch"] == "aarch64") {
+      ndkVersion = "24.0.8215888"
+    } else if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+      ndkVersion = "23.1.7779620"
+    } else {
+      ndkVersion = "21.4.7075529"
+    }
+    // #MEMO, #MODULE: @react-native-seoul/kakao-login
+    // #ADD:
+    kotlinVersion = "1.5.0"
+    // 
+    // #MEMO, #MODULE: @react-native-google-signin/google-signin
+    // #ADD:
+    googlePlayServicesAuthVersion = "19.2.0"
+    // 
+  }
+  repositories {
+    google()
+    // #MEMO, #MODULE: @react-native-seoul/naver-login
+    // #ADD:
+    jcenter()
+    // 
+    mavenCentral()
+  }
+  dependencies {
+    classpath("com.android.tools.build:gradle:7.0.4")
+    classpath("com.facebook.react:react-native-gradle-plugin")
+    classpath("de.undercouch:gradle-download-task:4.1.2")
+    // #MEMO, #MODULE: @react-native-firebase/app
+    // #MEMO, #MODULE: @react-native-google-signin/google-signin
+    // #ADD:
+    classpath("com.google.gms:google-services:4.3.10")
+    // 
+    // #MEMO, #MODULE: @react-native-seoul/kakao-login
+    // #ADD:
+    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+    // 
+  }
+}
+
+allprojects {
+  repositories {
+    maven {
+      url("$rootDir/../node_modules/react-native/android")
+    }
+    maven {
+      url("$rootDir/../node_modules/jsc-android/dist")
+    }
+    mavenCentral {
+      content {
+        excludeGroup "com.facebook.react"
+      }
+    }
+    google()
+    // #MEMO, #MODULE: @react-native-seoul/naver-login
+    // #ADD:
+    jcenter()
+    // 
+    // #MEMO, #MODULE: @react-native-seoul/kakao-login
+    // #ADD:
+    maven { 
+      url("https://devrepo.kakao.com/nexus/content/groups/public/")
+    }
+    // 
+    maven {
+      url("https://www.jitpack.io")
+    }
+  }
+}

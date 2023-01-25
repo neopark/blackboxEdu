@@ -1,0 +1,18 @@
+table.myTable {
+  border: 1px solid;
+  border-color: #cccccc;
+  border-collapse: collapse;
+  width: 100%;
+  text-align: left;
+}
+
+.myTable tr {
+  border-bottom: 1px solid;
+  border-color: #cccccc;
+}
+
+.myTable td {
+  border-right: 1px solid;
+  border-color: #cccccc;
+  padding-left: 10px;
+}

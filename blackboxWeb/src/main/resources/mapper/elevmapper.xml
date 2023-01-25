@@ -1,0 +1,240 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.saehan.elevblack.blackbox.mapper.ElevMapper">
+  <sql id = "elevColumns">
+    elevatorNo,    address1,    address2,    applcBeDt,    applcEnDt,    areaNo,    buldMgtNo1,    buldMgtNo2,    buldNm,    buldPrpos,    divGroundFloorCnt,
+    divUndgrndFloorCnt,    elvtrAsignNo,    elvtrDivNm,    elvtrFormNm,    elvtrKindNm,    elvtrMgtNo1,    elvtrMgtNo2,    elvtrModel,    elvtrResmptDe,    elvtrStts,
+    frstInstallationDe,    installationDe,    installationPlace,    lastInspctDe,    lastInspctKind,    lastResultNm,    inspctInstt,    liveLoad,    manufacturerName,
+    manufacturerTelno,    mnfcturCpnyCd,    mntCpnyCd,    mntCpnyNm,    mntCpnyTelno,    mrYn,    partcpntNm,    partcpntTelno,    ratedCap,    ratedSpeed,    shuttleFloorCnt,
+    shuttleMngrNm,    shuttleMngrTelno,    shuttleSection,    sigunguCd,    standardKey,    zipCd1,    zipCd2,    insDate,    insUserId,    updDate,    updUserId     
+  </sql>
+  <sql id = "elevUserColumns">  
+    idx,  elevatorNo,  userId,  insDate,  updDate  
+  </sql>
+
+    <!-- 엘리베이터 관련 처리 -->
+    <!-- 엘리베이터 정보 가져오기-->
+    <select id="selectElev" parameterType="ElevDTO"  resultType="ElevDTO" >
+      SELECT
+        <include refid="elevColumns" />
+      FROM 
+      tb_elev
+      where 1=1
+      and elevatorNo = #{elevatorNo}
+    </select>
+
+    <select id="selectElevList" parameterType="ElevDTO"  resultType="ElevDTO" >
+      SELECT
+        <include refid="elevColumns" />
+      FROM 
+      tb_elev
+      where 1=1
+      <if test = 'elevatorNo != null and elevatorNo != ""'>
+        and elevatorNo = #{elevatorNo}
+      </if>
+      order by elevatorNo DESC
+    </select>
+    <insert id="insertElev" parameterType="ElevDTO">
+      insert into tb_elev (
+        elevatorNo,    address1,    address2,    applcBeDt,    applcEnDt,    areaNo,    buldMgtNo1,    buldMgtNo2,    buldNm,    buldPrpos,    divGroundFloorCnt,
+        divUndgrndFloorCnt,    elvtrAsignNo,    elvtrDivNm,    elvtrFormNm,    elvtrKindNm,    elvtrMgtNo1,    elvtrMgtNo2,    elvtrModel,    elvtrResmptDe,    elvtrStts,
+        frstInstallationDe,    installationDe,    installationPlace,    lastInspctDe,    lastInspctKind,    lastResultNm,    inspctInstt,    liveLoad,    manufacturerName,
+        manufacturerTelno,    mnfcturCpnyCd,    mntCpnyCd,    mntCpnyNm,    mntCpnyTelno,    mrYn,    partcpntNm,    partcpntTelno,    ratedCap,    ratedSpeed,    shuttleFloorCnt,
+        shuttleMngrNm,    shuttleMngrTelno,    shuttleSection,    sigunguCd,    standardKey,    zipCd1,    zipCd2
+        ) values
+      (
+        #{elevatorNo},    #{address1},#{address2},  #{applcBeDt},  #{applcEnDt},  #{areaNo},  #{buldMgtNo1},  #{buldMgtNo2},  #{buldNm},  #{buldPrpos},  #{divGroundFloorCnt},
+          #{divUndgrndFloorCnt},  #{elvtrAsignNo},  #{elvtrDivNm},  #{elvtrFormNm},  #{elvtrKindNm},  #{elvtrMgtNo1},  #{elvtrMgtNo2},  #{elvtrModel},  #{elvtrResmptDe},  #{elvtrStts},
+          #{frstInstallationDe},  #{installationDe},  #{installationPlace},  #{lastInspctDe},  #{lastInspctKind},  #{lastResultNm},  #{inspctInstt},  #{liveLoad},  #{manufacturerName},
+          #{manufacturerTelno},  #{mnfcturCpnyCd},  #{mntCpnyCd},  #{mntCpnyNm},  #{mntCpnyTelno},  #{mrYn},  #{partcpntNm},  #{partcpntTelno},  #{ratedCap},  #{ratedSpeed},  #{shuttleFloorCnt},
+          #{shuttleMngrNm},  #{shuttleMngrTelno},  #{shuttleSection},  #{sigunguCd},  #{standardKey},  #{zipCd1},  #{zipCd2}
+      )
+    </insert>
+<!-- 여기까지 엘리베이터 처리 -->
+
+  <!-- 사용자 정보 -->
+  <select id="selectUserInfo" parameterType="java.util.Map"  resultType="UserDTO" >
+    SELECT
+      <include refid="com.saehan.elevblack.blackbox.mapper.UserMapper.userColumns" />
+    FROM 
+    tb_user
+    where userId=#{userId}
+  </select>
+
+    <select id="selectElevInfo" parameterType="java.util.Map"  resultType="ElevDTO" >
+      SELECT
+        <include refid="elevColumns" />
+      FROM 
+      tb_elev
+      where elevatorNo=#{elevatorNo}
+    </select>
+
+<select id="selectChangeList" parameterType="ElevChangeDTO" resultMap="changeMap">
+   select * from tb_elev_change
+   where 1=1
+   <if test = 'elevatorNo != null and elevatorNo != ""'>
+    and elevatorNo = #{elevatorNo}
+  </if>
+  <if test = 'idx != null and idx != ""'>
+    and idx = #{idx}
+  </if>
+  <if test = 'insUserId != null and insUserId != ""'>
+    and insUserId = #{insUserId}
+  </if>
+  <if test = 'sdate != null and sdate != ""'>
+    and insDate between #{sdate} and #{edate}
+  </if>
+  order by idx desc
+</select>
+<insert id="insertChange" parameterType="ElevChangeDTO">
+  insert into tb_elev_change (elevatorNo,title,content,fileMstIdx,insUserId) values
+  (#{elevatorNo},#{title},#{content},#{fileMstIdx},#{insUserId})
+</insert>
+<select id="selectTroubleList" parameterType="ElevTroubleDTO" resultMap="troubleMap">
+  select * from tb_elev_troubleshooting
+  where 1=1
+  <if test = 'elevatorNo != null and elevatorNo != ""'>
+   and elevatorNo = #{elevatorNo}
+ </if>
+ <if test = 'idx != null and idx != ""'>
+  and idx = #{idx}
+  </if>
+  <if test = 'insUserId != null and insUserId != ""'>
+    and insUserId = #{insUserId}
+  </if>
+  <if test = 'sdate != null and sdate != ""'>
+    and insDate between #{sdate} and #{edate}
+  </if>
+   order by idx desc
+</select>
+<insert id="insertTroubleShooting" parameterType="ElevTroubleDTO">
+  insert into tb_elev_troubleshooting (elevatorNo,title,content,fileMstIdx,insUserId) values
+  (#{elevatorNo},#{title},#{content},#{fileMstIdx},#{insUserId})
+</insert>
+
+<resultMap id="changeMap" type="ElevChangeDTO">
+  <association property="userinfo" column="{userId=insUserId}"  select="selectUserInfo" javaType="UserDTO" />
+  <association property="elevinfo" column="{elevatorNo=elevatorNo}"  select="selectElevInfo" javaType="ElevCheckListDTO" />
+  <collection property="files" column="{idx=fileMstidx}"  ofType="ElevChangeDTO" select="selectFileList" javaType="List" />
+</resultMap>
+<resultMap id="troubleMap" type="ElevTroubleDTO">
+  <association property="userinfo" column="{userId=insUserId}"  select="selectUserInfo" javaType="UserDTO" />
+  <association property="elevinfo" column="{elevatorNo=elevatorNo}"  select="selectElevInfo" javaType="ElevCheckListDTO" />
+  <collection property="files" column="{idx=fileMstidx}"  ofType="ElevTroubleDTO" select="selectFileList" javaType="List" />
+</resultMap>
+
+<select id="selectFileList" parameterType="java.util.Map"  resultType="FileDtl" >
+      select * from tb_file_dtl
+      where fileMstIdx = #{idx}
+</select>
+
+<insert id="insertContactData" parameterType="ElevContactDataDTO">
+  insert into tb_contact_data (elevatorNo,wdate,wtime,seq,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p21,p22,p23,p24) values
+  (#{elevatorNo},#{wdate},#{wtime},#{seq},#{p1},#{p2},#{p3},#{p4},#{p5},#{p6},#{p7},#{p8},#{p9},#{p10},#{p11},#{p12},#{p13},#{p14},#{p15},#{p16},#{p17},#{p18},#{p19},#{p20},#{p21},#{p22},#{p23},#{p24})
+</insert>
+
+<insert id="insertContactDataList" parameterType="java.util.List">
+  insert into tb_contact_data (elevatorNo,wdate,wtime,seq,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p21,p22,p23,p24) values
+  <foreach collection="list" index="index" item="contact" separator=",">
+  (
+  #{contact.elevatorNo},#{contact.wdate},#{contact.wtime},#{contact.seq},#{contact.p1},#{contact.p2},#{contact.p3},#{contact.p4},#{contact.p5},#{contact.p6},#{contact.p7},#{contact.p8},#{contact.p9},#{contact.p10},#{contact.p11},#{contact.p12},#{contact.p13},#{contact.p14},#{contact.p15},#{contact.p16},#{contact.p17},#{contact.p18},#{contact.p19},#{contact.p20},#{contact.p21},#{contact.p22},#{contact.p23},#{contact.p24}
+  )
+  </foreach>
+  on duplicate key update P24 = values(p24)
+</insert>
+<!-- 여기까지 교환및고장처리-->
+
+
+<!-- <
+
+
+
+<select id ="selectCheckHistMaster" parameterType="CheckHistMasterDTO" resultMap="CheckHistMap" >
+      select
+      <include refid="checkHistMasterColumns"/>
+      FROM
+      tb_check_hist_master 
+      where 1=1
+      order by idx desc
+</select>
+<insert id="insertCheckHistMaster" parameterType="CheckHistMasterDTO">
+  insert into tb_check_hist_master (elevatorNo,gubun,ctype,content) values
+  (#{elevatorNo},#{gubun},#{ctype},#{content})
+</insert>
+<insert id="insertCheckHistDetail" parameterType="CheckHistDetailDTO">
+  insert into tb_check_hist_detail (masterIdx,checkIdx,result) values
+  (#{masterIdx},#{checkIdx},#{result})
+</insert>
+<delete id="deleteCheckHistDetail" parameterType="CheckHistMasterDTO">
+ delete tb_check_hist_detail where masterIdx = #{masterIdx}
+</delete>
+
+
+    <! <select id="selectElevHistList" parameterType="ElevHistDTO"  resultType="ElevHistDTO" >
+      SELECT
+        <include refid="elevHistColumns" />
+      FROM 
+      TB_ELEV_HIST
+      where elev_code = #{elev_code}
+      order by idx desc
+    </select>
+    
+    <select id="selectCheckMasterList" parameterType="CheckMasterDTO"  resultType="CheckMasterDTO" >
+      SELECT
+        <include refid="checkMasterColumns" />
+      FROM 
+      TB_CHECK_MASTER
+      where elev_code = #{elev_code}
+      order by idx desc
+    </select>
+
+    <select id="selectCheckList" parameterType="CheckDTO"  resultType="CheckDTO" >
+      SELECT
+        <include refid="checkColumns" />
+      FROM 
+      TB_CHECK
+      where check_code = #{check_code}
+      order by idx desc
+    </select>
+
+    <select id="selectElevListPage"  resultType="ElevDTO"  >
+		SELECT
+			<include refid="elevColumns" />
+	   FROM 
+       TB_ELEV
+    order by click_cnt DESC
+	</select>
+
+  <insert  id="insertCheckMaster" parameterType="CheckMasterDTO" >
+    INSERT INTO TB_CHECK_MASTER 	(elev_code,	status, 	user_id, 	start_date, 	end_date	)
+    VALUES	( 	#{elev_code}, 	#{status}, 	#{user_id},  #{start_date}, 	#{end_date}	)
+  </insert>
+  <insert  id="insertCheck" parameterType="CheckDTO" >
+    INSERT INTO TB_CHECK_MASTER 	(	check_idx,     check_code,     check_name,     check_content,     check_status    )
+    VALUES    (    #{check_idx},     #{check_code},     #{check_name},     #{check_content},     #{check_status}    )
+  </insert>
+  <insert  id="insertElevHist" parameterType="ElevHistDTO" >
+    INSERT INTO TB_ELEV_HIST (check_idx,   elev_code,     data,     create_date    )
+    VALUES    (     #{check_idx},     #{elev_code},     #{data},     #{create_date}    )
+  </insert>
+
+  <insert  id="updateCheckMater" parameterType="CheckMasterDTO" >
+     UPDATE TB_CHECK_MASTER set status = #{status} where idx = #{idx}
+  </insert>
+
+  <select id="selectUserById" parameterType="UserDTO"  resultType="UserDTO">
+    select user_id,user_name,auth,create_date,update_date,update_id
+    from TB_USER
+    where user_id = #{user_id}
+  </select>
+  <select id="selectUserAll" parameterType="UserDTO"  resultType="UserDTO">
+    select user_id,user_name,auth,create_date,update_date,update_id
+    from TB_USER
+  </select>
+  <select id="selectPassCheck" parameterType="UserDTO"  resultType="UserDTO">
+    select user_id,user_name,auth,create_date,update_date,update_id
+    from TB_USER
+  </select>
+ -->
+
+
+</mapper>

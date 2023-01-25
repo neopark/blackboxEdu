@@ -1,0 +1,178 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.saehan.elevblack.blackbox.mapper.UserMapper">
+    <sql id = "userColumns">  
+        userId,userPw,userNm,hp,bizRegNo,bizName,license,snsType,role,fcmToken,naverId,kakaoId,googleId,appleId,insDate,insUserId,updDate,updUserId
+    </sql>
+
+    <select id="selectUserList" parameterType="UserDTO"  resultType="UserListDTO">
+        select userId,userPw,userNm,hp,bizRegNo,bizName,license,snsType,role,fcmToken,naverId,kakaoId,googleId,appleId,insDate,insUserId,updDate,updUserId
+        from tb_user
+    </select>
+
+    <select id="selectUserPass" parameterType="UserDTO"  resultType="UserDTO">
+        select userId,userPw,userNm,hp,bizRegNo,bizName,license,snsType,role,fcmToken,naverId,kakaoId,googleId,appleId,insDate,insUserId,updDate,updUserId
+        from tb_user
+        where 1=1
+        <if test='userId != null or userPw != null'>
+            and userId = #{userId} and userPw = SHA2(#{userPw},512)
+        </if>
+    </select>
+    <select id="selectUserWhere" parameterType="UserDTO"  resultType="UserDTO">
+        select userId,userPw,userNm,hp,bizRegNo,bizName,license,snsType,role,fcmToken,naverId,kakaoId,googleId,appleId,insDate,insUserId,updDate,updUserId
+        from tb_user
+        where 1=1
+        <if test='userId != null or userPw != null'>
+            and userId = #{userId} and userPw = SHA2(#{userPw},512)
+        </if>
+    </select>
+    <select id="selectUserInfo" parameterType="UserDTO"  resultType="UserDTO">
+        select userId,userPw,userNm,hp,bizRegNo,bizName,license,snsType,role,fcmToken,naverId,kakaoId,googleId,appleId,insDate,insUserId,updDate,updUserId
+        from tb_user
+        where 1=1
+        <if test='userId != null'>
+            and userId = #{userId} 
+        </if>
+    </select>
+
+    <select id="selectSnsLogin" parameterType="UserDTO"  resultType="UserDTO">
+        select *
+        <!-- userId,userPw,userNm,hp,bizRegNo,bizName,license,snsType,role,fcmToken,naverId,kakaoId,googleId,appleId,insDate,insUserId,updDate,updUserId -->
+        from tb_user
+        where 1=1
+        and userId = #{userId}
+    </select>
+    <select id="selectSnsUser" parameterType="UserDTO"  resultType="UserDTO">
+        select userId,userPw,userNm,hp,bizRegNo,bizName,license,snsType,role,fcmToken,naverId,kakaoId,googleId,appleId,insDate,insUserId,updDate,updUserId
+        from tb_user
+        where 1=1
+        <choose>
+            <when test ='snsType == "kakao"'>
+                and  kakaoId = #{kakaoId}     
+            </when>
+            <when test ='snsType == "naver"'>
+                and naverId = #{naverId}   
+            </when>
+            <when test ='snsType == "google"'>
+                and googleId = #{googleId}   
+            </when>
+            <when test ='snsType == "apple"'>
+                and  appleId = #{appleId}     
+            </when>
+        </choose>
+    </select>
+
+    <insert  id="saveUser" parameterType="UserDTO" >
+        insert into tb_user (userId,userPw,userNm,hp,role,fcmToken,naverId,kakaoId,googleId,appleId) values (#{userId},SHA2(#{userPw},512),#{userNm},#{hp},#{role},#{fcmToken},#{naverId},#{kakaoId},#{googleId},#{appleId})
+    </insert>    
+    <insert  id="saveSnsUser" parameterType="UserDTO" >
+        insert into tb_user (userId,userNm,bizRegNo,bizName,license,snsType,hp,role,fcmToken,naverId,kakaoId,googleId,appleId,deviceType,deviceId) 
+        values (#{userId},#{userNm},#{bizRegNo},#{bizName},#{license},#{snsType},#{hp},'USER',#{fcmToken},#{naverId},#{kakaoId},#{googleId},#{appleId},#{deviceType},#{deviceId})
+    </insert>    
+    <update  id="updateSnsUser" parameterType="UserDTO" >
+        update tb_user set 
+        <choose>
+            <when test ='snsType == "kakao"'>
+               kakaoId = #{kakaoId}     
+            </when>
+            <when test ='snsType == "naver"'>
+               naverId = #{naverId}   
+            </when>
+            <when test ='snsType == "google"'>
+               googleId = #{googleId}   
+            </when>
+            <when test ='snsType == "apple"'>
+               appleId = #{appleId}     
+            </when>            
+        </choose>
+        where userId = #{userId}
+    </update>    
+    <update  id="deleteSnsUser" parameterType="UserDTO" >
+        update tb_user set 
+        <choose>
+            <when test ='snsType == "kakao"'>
+               kakaoId = ''
+            </when>
+            <when test ='snsType == "naver"'>
+               naverId = ''   
+            </when>
+            <when test ='snsType == "google"'>
+               googleId = ''   
+            </when>
+            <when test ='snsType == "apple"'>
+               appleId = ''  
+            </when>            
+        </choose>
+        where userId = #{userId}
+    </update>    
+
+    <update  id="updateUser" parameterType="UserDTO" >
+        update tb_user 
+        set 
+         userNm = #{userNm}
+         <if test = 'bizRegNo !=null and bizRegNo != ""'>
+            ,bizRegNo = #{bizRegNo}   
+         </if>          
+         <if test = 'bizName !=null and bizName != ""'>
+            ,bizName = #{bizName}   
+         </if> 
+         <if test = 'license !=null and license != ""'>
+            ,license = #{license}   
+         </if> 
+          <if test = 'deviceId !=null and deviceId != ""'>
+            ,deviceId = #{deviceId}
+        </if>
+        <if test = 'deviceType !=null and deviceType != ""'>
+         ,deviceType = #{deviceType}
+         </if>
+         <if test = 'hp !=null and hp != ""'>
+            ,hp = #{hp}
+         </if>
+         <if test = 'fcmToken !=null and fcmToken != ""'>
+            ,fcmToken = #{fcmToken}
+         </if>
+        where userId = #{userId}
+    </update>    
+    <!-- 특정값만 변겅시에 사용하는 쿼리 (비밀번호,fcmToken -->
+    <update  id="updateUserItem" parameterType="UserDTO" >
+        update tb_user 
+        set
+        <if test='userPw != null or userPw !=""'>
+            userPw = SHA2(#{userPw},512)
+        </if>
+        <if test='userPw != null or userPw !=""'>
+            fcmToken = #{fcmToken} 
+        </if>
+        where userId = #{userId}
+    </update>    
+    <delete id="deleteUser">
+        delete tb_user where userId = #{userId}
+    </delete>
+
+
+    <!-- 메세지 리스트  -->
+    <select id="selectMsgList" parameterType="MessageDTO"  resultType="MessageDTO">
+        select * from tb_message where 
+        1=1 and sendYn = true 
+        and insUserId =#{insUserId}
+        order by insDate desc
+    </select>
+
+    
+    <!-- tb_user fcmToken -->
+    <insert  id="updateFcmToken" parameterType="UserDTO" >
+        update tb_user set fcmToken = #{fcmToken} where deviceId = #{deviceId}
+    </insert>    
+
+
+    <!-- 테스트용 fcm token -->
+    <select id="selectFcmTokenById" parameterType="int" resultType="FcmTokenDTO">
+        select count(*) from where deviceId = #{deviceId}
+    </select>
+    <insert  id="insertFcmToken" parameterType="FcmTokenDTO" >
+        insert into tb_fcmtoken (fcmToken,deviceId) values (#{fcmToken},#{deviceId})
+    </insert>    
+    <select id="selectFcmToken" resultType="FcmTokenDTO" >
+        select * from tb_fcmtoken order by idx desc LIMIT 0,1
+    </select>
+    <!-- 테스트용 fcm token -->
+</mapper>

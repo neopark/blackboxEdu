@@ -1,0 +1,236 @@
+apply plugin: "com.android.application"
+
+// #MEMO, #MODULE: @react-native-firebase/app
+// #MEMO, #MODULE: @react-native-google-signin/google-signin
+// #ADD:
+apply plugin: "com.google.gms.google-services"
+// 
+
+project.ext.envConfigFiles = [
+  anothercustombuild: ".env.basic",
+  // #MEMO, #TYPE
+  basic: ".env.basic",
+  pro: ".env.pro",
+  // 
+]
+
+apply from: project(":react-native-config").projectDir.getPath() + "/dotenv.gradle"
+
+// #MEMO, #MODULE: react-native-vector-icons
+// #ADD:
+project.ext.vectoricons = [
+  iconFontNames: [
+    "AntDesign.ttf", 
+    "Feather.ttf",
+  ]
+]
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+// 
+
+import com.android.build.OutputFile
+import org.apache.tools.ant.taskdefs.condition.Os
+
+project.ext.react = [
+  enableHermes: false,
+]
+
+apply from: "../../node_modules/react-native/react.gradle"
+
+def enableSeparateBuildPerCPUArchitecture = false
+
+def enableProguardInReleaseBuilds = false
+
+def jscFlavor = "org.webkit:android-jsc:+"
+
+def enableHermes = project.ext.react.get("enableHermes", false);
+
+def reactNativeArchitectures() {
+  def value = project.getProperties().get("reactNativeArchitectures")
+  return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
+}
+
+android {
+  ndkVersion rootProject.ext.ndkVersion
+  compileSdkVersion rootProject.ext.compileSdkVersion
+  defaultConfig {
+    manifestPlaceholders = [
+      name: "${project.env.get("PRODUCT_NAME")}",
+      icon: "@mipmap/${project.env.get("TYPE")}_ic_launcher",
+      roundIcon: "@mipmap/${project.env.get("TYPE")}_ic_launcher_round",
+      // #MEMO, #BOOT_SPLASH
+      // #MEMO, #MODULE: react-native-bootsplash
+      // #ADD:
+      theme: "@style/${project.env.get("TYPE")}_boot_splash_theme",
+      // 
+      // #MEMO, #MODULE: @react-native-firebase/messaging
+      // #MEMO, #MODULE: react-native-push-notification
+      // #ADD:
+      mainColor: "@color/${project.env.get("TYPE")}",
+      // 
+      // #MEMO, #MODULE: @react-native-seoul/kakao-login
+      // #ADD:
+      kakaoNativeAppKey: "${project.env.get("KAKAO_NATIVE_APP_KEY")}",
+      // 
+    ]
+    // #MEMO, #MODULE: @react-native-seoul/kakao-login
+    // #ADD:
+    resValue "string", "kakao_app_key", "${project.env.get("KAKAO_NATIVE_APP_KEY")}"
+    // 
+    // #MEMO, #MODULE: react-native-qrcode-scanner
+    // #ADD:
+    missingDimensionStrategy "react-native-camera", "general"
+    // 
+    applicationId "${project.env.get("PACKAGE_NAME")}"
+    minSdkVersion rootProject.ext.minSdkVersion
+    targetSdkVersion rootProject.ext.targetSdkVersion
+    versionCode project.env.get("VERSION_CODE") as Integer
+    versionName "${project.env.get("VERSION_NAME")}"
+    applicationIdSuffix = ".${project.env.get("TYPE")}"
+    archivesBaseName = "${project.env.get("NAME")}.${project.env.get("TYPE")}-v${project.env.get("VERSION_NAME")}.${project.env.get("VERSION_CODE")}"
+    resValue "string", "build_config_package", "${project.env.get("PACKAGE_NAME")}"
+    buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
+    if (isNewArchitectureEnabled()) {
+      externalNativeBuild {
+        ndkBuild {
+          arguments "APP_PLATFORM=android-21", "APP_STL=c++_shared", "NDK_TOOLCHAIN_VERSION=clang", "GENERATED_SRC_DIR=$buildDir/generated/source", "PROJECT_BUILD_DIR=$buildDir", "REACT_ANDROID_DIR=$rootDir/../node_modules/react-native/ReactAndroid", "REACT_ANDROID_BUILD_DIR=$rootDir/../node_modules/react-native/ReactAndroid/build"
+          cFlags "-Wall", "-Werror", "-fexceptions", "-frtti", "-DWITH_INSPECTOR=1"
+          cppFlags "-std=c++17"
+          targets "app_appmodules"
+          if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+            arguments "NDK_OUT=${rootProject.projectDir.getParent()}\\.cxx", "NDK_APP_SHORT_COMMANDS=true"
+          }
+        }
+      }
+      if (!enableSeparateBuildPerCPUArchitecture) {
+        ndk {
+          abiFilters (*reactNativeArchitectures())
+        }
+      }
+    }
+  }
+  if (isNewArchitectureEnabled()) {
+    externalNativeBuild {
+      ndkBuild {
+        path "$projectDir/src/main/jni/Android.mk"
+      }
+    }
+    def reactAndroidProjectDir = project(":ReactAndroid").projectDir
+    def packageReactNdkDebugLibs = tasks.register("packageReactNdkDebugLibs", Copy) {
+      dependsOn(":ReactAndroid:packageReactNdkDebugLibsForBuck")
+      from("$reactAndroidProjectDir/src/main/jni/prebuilt/lib")
+      into("$buildDir/react-ndk/exported")
+    }
+    def packageReactNdkReleaseLibs = tasks.register("packageReactNdkReleaseLibs", Copy) {
+      dependsOn(":ReactAndroid:packageReactNdkReleaseLibsForBuck")
+      from("$reactAndroidProjectDir/src/main/jni/prebuilt/lib")
+      into("$buildDir/react-ndk/exported")
+    }
+    afterEvaluate {
+      preDebugBuild.dependsOn(packageReactNdkDebugLibs)
+      preReleaseBuild.dependsOn(packageReactNdkReleaseLibs)
+      configureNdkBuildRelease.dependsOn(preReleaseBuild)
+      configureNdkBuildDebug.dependsOn(preDebugBuild)
+      reactNativeArchitectures().each { architecture ->
+        tasks.findByName("configureNdkBuildDebug[${architecture}]")?.configure {
+          dependsOn("preDebugBuild")
+        }
+        tasks.findByName("configureNdkBuildRelease[${architecture}]")?.configure {
+          dependsOn("preReleaseBuild")
+        }
+      }
+    }
+  }
+  splits {
+    abi {
+      reset()
+      enable enableSeparateBuildPerCPUArchitecture
+      universalApk false
+      include (*reactNativeArchitectures())
+    }
+  }
+  signingConfigs {
+    release {
+      storeFile file("${project.env.get("SIGNING_STORE_FILE_NAME")}")
+      storePassword "${project.env.get("SIGNING_STORE_PASSWORD")}"
+      keyAlias "${project.env.get("SIGNING_KEY_ALIAS")}"
+      keyPassword "${project.env.get("SIGNING_KEY_PASSWORD")}"
+    }
+  }
+  buildTypes {
+    debug {
+      signingConfig signingConfigs.release
+    }
+    release {
+      signingConfig signingConfigs.release
+      minifyEnabled enableProguardInReleaseBuilds
+      proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+    }
+  }
+  flavorDimensions "default"
+  productFlavors {
+    // #MEMO, #TYPE
+    basic { }
+    pro { }
+    // 
+  }
+  applicationVariants.all { variant ->
+    variant.outputs.each { output ->
+      def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
+      def abi = output.getFilter(OutputFile.ABI)
+      if (abi != null) {
+        output.versionCodeOverride = defaultConfig.versionCode * 1000 + versionCodes.get(abi)
+      }
+    }
+  }
+}
+
+dependencies {
+  implementation fileTree(dir: "libs", include: ["*.jar"])
+  implementation "com.facebook.react:react-native:+"
+  implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+  // #MEMO, #MODULE: @react-native-firebase/messaging
+  // #ADD:
+  implementation "com.google.firebase:firebase-messaging:20.2.3"
+  // 
+  // #MEMO, #BOOT_SPLASH
+  // #MEMO, #MODULE: react-native-bootsplash
+  // #ADD:
+  implementation "androidx.core:core-splashscreen:1.0.0-beta01"
+  // 
+  debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
+    exclude group:"com.facebook.fbjni"
+  }
+  debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
+    exclude group:"com.facebook.flipper"
+    exclude group:"com.squareup.okhttp3", module:"okhttp"
+  }
+  debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}") {
+    exclude group:"com.facebook.flipper"
+  }
+  if (enableHermes) {
+    def hermesPath = "../../node_modules/hermes-engine/android/";
+    debugImplementation files(hermesPath + "hermes-debug.aar")
+    releaseImplementation files(hermesPath + "hermes-release.aar")
+  } else {
+    implementation jscFlavor
+  }
+}
+
+if (isNewArchitectureEnabled()) {
+  configurations.all {
+    resolutionStrategy.dependencySubstitution {
+      substitute(module("com.facebook.react:react-native")).using(project(":ReactAndroid")).because("On New Architecture we`re building React Native from source")
+    }
+  }
+}
+
+task copyDownloadableDepsToLibs(type: Copy) {
+  from configurations.implementation
+  into "libs"
+}
+
+apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+
+def isNewArchitectureEnabled() {
+  return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
+}

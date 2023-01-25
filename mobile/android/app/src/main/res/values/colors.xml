@@ -1,0 +1,7 @@
+<resources>
+  <color name="white">#ffffff</color>
+  <!-- #MEMO, #TYPE -->
+  <color name="basic">#273a96</color>
+  <color name="pro">#e91f63</color>
+  <!--  -->
+</resources>

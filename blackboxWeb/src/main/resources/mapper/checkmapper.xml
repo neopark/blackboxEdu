@@ -1,0 +1,262 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.saehan.elevblack.blackbox.mapper.ElevMapper">
+   
+      <!-- 체커관련 컬럼 정의 -->
+      <sql id = "checkHistMasterColumns">
+        idx,  elevatorNo,  gubun,  ctype,status,  content,cStatus ,  insDate,  insUserId,  updDate,  updUserId
+      </sql>
+      <sql id = "checkHistDetailColumns">  
+        masterIdx,  checkIdx,  result,  insDate,  insUserId,  updDate,  updUserId  
+      </sql>
+      <sql id = "elevCheckListColumns">  
+        idx,type,code,masterCode,codeName,codeContent,per,insDate,insUserId,updDate,updUserId
+      </sql>
+      <sql id = "elevHistColumns">  
+        idx,checkHistIdx,data,statusDate,insDate,insUserId,updDate,updUserId
+      </sql>
+      <!-- 컬럼 정의 -->
+  
+      <!-- 체커 리스트 -->
+        <select id="selectCheckHistByID" parameterType="int"  resultType="CheckHistMasterDTO" >
+          SELECT
+           *
+          FROM 
+          tb_check_hist_master
+          where idx = #{idx}
+        </select>
+        <!-- 체커 리스트 -->
+        <select id="selectCheckListByID" parameterType="java.util.Map"  resultType="ElevCheckListDTO" >
+          SELECT
+            <include refid="elevCheckListColumns" />
+          FROM 
+          tb_elev_checklist
+          where idx = #{idx}
+          LIMIT 0,1
+        </select>
+        <select id="selectCheckList" parameterType="ElevCheckListDTO"  resultType="ElevCheckListDTO" >
+          SELECT
+            <include refid="elevCheckListColumns" />
+          FROM 
+          tb_elev_checklist
+          where 1=1
+          <if test = 'type != null and type != ""'>
+            and type = #{type}
+          </if>
+          <if test = 'masterCode != null'>
+            and masterCode = #{masterCode}
+          </if>
+          <if test = 'masterCode == null'>
+            and masterCode = ''
+          </if>
+          order by code asc
+        </select>
+
+      <!-- 체커 리스트 -->
+
+        <select id="selectCheckHistDetail" parameterType="java.util.Map"  resultMap="CheckHistDetailMap" >
+          SELECT
+          <include refid="checkHistDetailColumns" />
+          FROM
+          tb_check_hist_detail 
+          where masterIdx = #{idx}
+      </select>
+
+      <!-- 점검 처리 시작 -->   
+
+      <!-- 엘리베이터정보 사용자 정보 모두 가져오기 -->
+      <resultMap id="CheckHistMasterAllInfo" type="CheckHistMasterDTO">
+        
+        <association property="elevinfo" column="{elevatorNo=elevatorNo}"  select="selectElevInfo" javaType="ElevCheckListDTO" />
+        <association property="userinfo" column="{userId=insUserId}"  select="selectUserInfo" javaType="UserDTO" />
+      <!--  <collection property="details" column="{idx=idx}"  ofType="CheckHistDetailDTO" select="selectCheckHistDetail" javaType="List"/>  -->
+      </resultMap>
+      <!-- 엘리베이터정보 사용자 정보 상세 정보 모두 가져오기 -->
+      <resultMap id="CheckHistMasterAllInfoDetails" type="CheckHistMasterDTO">
+        <association property="elevinfo" column="{elevatorNo=elevatorNo}"  select="selectElevInfo" javaType="ElevCheckListDTO" />
+        <association property="userinfo" column="{userId=insUserId}"  select="selectUserInfo" javaType="UserDTO" />
+        <collection property="details" column="{idx=idx}"  ofType="CheckHistDetailDTO" select="selectCheckHistDetail" javaType="List"/>  
+      </resultMap>
+
+
+      <resultMap id="CheckHistMap" type="CheckHistMasterDTO">
+        <collection property="details" column="{idx=idx}"  ofType="CheckHistDetailDTO" select="selectCheckHistDetail" javaType="List">
+          </collection>  
+      </resultMap>
+
+      <resultMap id="CheckHistDetailMap" type="CheckHistDetailDTO">
+        <association property="checkList" column="{idx=checkIdx}"  select="selectCheckListByID" javaType="ElevCheckListDTO" />
+      </resultMap>
+
+      <!-- 전체 마스터 값을 가져오기 -->
+      <select id ="selectCheckHistMaster" parameterType="CheckHistMasterDTO" resultType="CheckHistMasterDTO" >
+        select
+        <include refid="checkHistMasterColumns"/>
+        FROM
+        tb_check_hist_master 
+        where 1=1
+        <if test='insUserId != null'>
+        and insUserId=#{insUserId}
+        </if>
+        <if test='sDate != null'>
+        and insDate betweeen #{sDate} and #{eDate}
+        </if>
+      
+        order by idx desc
+      </select>
+
+      <!-- 마스터와 디테일 전체값을 가져오기 -->
+      <select id ="selectCheckHistMasterDetail" parameterType="CheckHistMasterDTO" resultMap="CheckHistMasterAllInfo" >
+        select
+        <include refid="checkHistMasterColumns"/>
+        FROM
+        tb_check_hist_master 
+        where 1=1
+        <if test='idx != null and idx !=""'>
+          and idx=#{idx}
+        </if>
+        <if test='insUserId != null and insUserId !=""'>
+          and insUserId=#{insUserId}
+        </if>
+        <if test='elevatorNo != null'>
+          and elevatorNo=#{elevatorNo}
+        </if>
+        <if test='sDate != null'>
+          and insDate BETWEEN #{sDate} AND #{eDate}
+         </if> 
+          and status != 'C'
+          and elevatorNo in (select elevatorNo from tb_elev)
+        order by idx desc
+      </select>
+
+       <!-- 마스터 상세 정보 가져오기 -->
+       <select id ="selectCheckHistMasterById" parameterType="CheckHistMasterDTO" resultMap="CheckHistMasterAllInfoDetails" >
+        select
+        <include refid="checkHistMasterColumns"/>
+        FROM
+        tb_check_hist_master 
+        where 1=1
+        and idx=#{idx}
+        </select>
+
+      <select id="selectCheckDetailResult" parameterType="java.util.Map" resultMap="CheckHistDetailMap">
+          select * from tb_check_hist_detail where  masterIdx=#{masterIdx}
+      </select>
+ 
+      <insert id="insertCheckHistMaster" parameterType="CheckHistMasterDTO"   useGeneratedKeys="true" keyProperty="idx" >
+        insert into tb_check_hist_master (elevatorNo,gubun,ctype,content,insUserId) values
+        (#{elevatorNo},#{gubun},#{ctype},#{content},#{insUserId})
+        <selectKey keyProperty="idx" resultType="int">
+          SELECT LAST_INSERT_ID()
+        </selectKey>
+      </insert>
+      <update id="updateStatusCheckHistMaster" parameterType="CheckHistMasterDTO">
+          update tb_check_hist_master 
+          set status = #{status}
+          ,cStatus = #{cStatus}
+          ,content = #{content}
+          ,updDate = SYSDATE()
+          ,updUserId = #{updUserId}
+          where idx = #{idx} 
+      </update>
+      <insert id="insertCheckHistDetail" parameterType="CheckHistDetailDTO">
+        insert into tb_check_hist_detail (masterIdx,checkIdx,result,insUserId) values
+        (#{masterIdx},#{checkIdx},#{result},#{insUserId})
+      </insert>
+      <delete id="deleteCheckHistMaster" parameterType="CheckHistMasterDTO">
+        delete FROM tb_check_hist_master
+        WHERE 1=1 AND elevatorNo IN (
+        SELECT elevatorNo FROM tb_check_hist_master 
+        WHERE idx=#{idx} ) AND cStatus='F'
+        </delete>
+ 
+      <delete id="deleteCheckHistDetail" parameterType="CheckHistMasterDTO">
+      delete from tb_check_hist_detail where masterIdx = #{idx}
+      </delete>
+      <!-- 체커 디테일 나머지 입력처리-->
+      <insert id="insertCheckHistDetailEtc" parameterType="CheckHistMasterDTO"    >
+        <![CDATA[
+            INSERT INTO tb_check_hist_detail (masterIdx,checkIdx,result)
+            SELECT #{idx},idx,'A' FROM tb_elev_checklist aa
+            LEFT JOIN 
+            (
+            SELECT checkIdx FROM tb_check_hist_master a
+            LEFT JOIN tb_check_hist_detail b ON a.idx = b.masterIdx
+            WHERE idx=#{idx}
+            ) bb ON aa.idx = bb.checkIdx 
+            WHERE  bb.checkIdx IS NULL 
+        ]]>
+      </insert>
+      <!-- 점검 처리 완료 -->
+
+      <!-- 월현황 관련시작 -->
+      <!-- 월점검중 카운트 -->
+      <select id="checkingCount" parameterType="ElevDTO" resultType="int">
+        select count(*) from tb_check_hist_master where 1=1
+        and status='1'
+        AND elevatorNo IN (SELECT elevatorNo FROM tb_elev )
+        AND YEAR(insdate)=YEAR(NOW()) AND MONTH(insdate) = MONTH(NOW())
+      </select>
+      <select id="checkingCountS" parameterType="ElevDTO" resultType="int">
+        select count(*) from tb_check_hist_master where 1=1
+        and cStatus='S'
+        and status='0'
+        AND elevatorNo IN (SELECT elevatorNo FROM tb_elev )
+        AND YEAR(insdate)=YEAR(NOW()) AND MONTH(insdate) = MONTH(NOW())
+      </select>      
+      <select id="checkingCountF" parameterType="ElevDTO" resultType="int">
+        select count(*) from tb_check_hist_master where 1=1
+        and status != 'C'
+        and cStatus='F'
+        AND elevatorNo IN (SELECT elevatorNo FROM tb_elev )
+        AND YEAR(insdate)=YEAR(NOW()) AND MONTH(insdate) = MONTH(NOW())
+        
+      </select>      
+
+      <!--
+      <select id="checkingElevList" parameterType="ElevDTO" resultType="ElevDTO">
+        select * from tb_elev where elevatorNo in (
+        select elevatorNo from tb_check_hist_master where status='1' )
+      </select>
+      -->
+        <select id ="checkingElevList" parameterType="CheckHistMasterDTO" resultMap="CheckHistMasterAllInfo" >
+        select
+        <include refid="checkHistMasterColumns"/>
+        FROM
+        tb_check_hist_master 
+        where 1=1
+        and status = '1'
+        and elevatorNo IN (SELECT elevatorNo FROM tb_elev)
+        order by idx desc
+       </select>
+   
+       <select id="checkingContactList" parameterType="CheckPointDao" resultType="CheckContactDataDTO">
+          select * from tb_contact_data where
+          1=1
+          AND elevatorNo = #{elevatorNo}
+          <if test='wdate != null and wdate != ""'>
+          AND wdate = #{wdate}
+          </if>
+          <if test='stime != null and stime != ""'>
+          AND wtime BETWEEN  #{stime} AND #{etime}
+          </if>
+      </select>
+      <select id="selectCStatus" parameterType="CheckHistMasterDTO" resultType="String" statementType="CALLABLE">
+        { 
+          call sp_check_status2(#{idx})
+        }
+      </select>
+      <!-- <select id="checkingElevList" parameterType="CheckContactDataDTO" resultType="CheckContactDataDTO">
+          select * from tb_check_contact_data
+      </select> -->
+    
+      <!-- 현형관련끝 -->
+
+     <!--
+      <select id="selectCheckDetailResult" parameterType="java.util.Map" resultType="CheckHistDetailResultDTO">
+        SELECT a.type,a.code,a.masterCode,a.codeName,a.codeContent,a.per,b.checkIdx,b.masterIdx,b.result FROM 
+        (SELECT * FROM tb_elev_checklist WHERE TYPE=#{type}) a
+        LEFT JOIN( SELECT * FROM  tb_check_hist_detail WHERE masterIdx=#{masterIdx}) b
+        ON a.idx = b.checkIdx
+      </select>
+    -->
+</mapper>

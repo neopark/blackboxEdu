@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "371664777280",
+    "project_id": "kkch196247-app",
+    "storage_bucket": "kkch196247-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371664777280:android:b3f6d3ac96768122eeefa5",
+        "android_client_info": {
+          "package_name": "com.kkch196247.app.mobile.basic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "371664777280-5070dsddrk0jkvk8954ckcdv4ljjglp6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kkch196247.app.mobile.basic",
+            "certificate_hash": "e3732db95abddd09ffed462bd484e7d04f046ba3"
+          }
+        },
+        {
+          "client_id": "371664777280-nh40s8iaqbtp6k8pcdopf0535jjmiim6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPiODNKb6Aj_Hl0plVRSsaUOeZomOnQsQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "371664777280-nh40s8iaqbtp6k8pcdopf0535jjmiim6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "371664777280-1vsgg9qn7o6oa303br8t2kqpuaenj1d9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kkch196247.app.mobile.pro"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:371664777280:android:d1c2540922545157eeefa5",
+        "android_client_info": {
+          "package_name": "com.kkch196247.app.mobile.pro"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "371664777280-m6ccv4fiarh5l7as0c0iscbn8684angl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kkch196247.app.mobile.pro",
+            "certificate_hash": "e3732db95abddd09ffed462bd484e7d04f046ba3"
+          }
+        },
+        {
+          "client_id": "371664777280-nh40s8iaqbtp6k8pcdopf0535jjmiim6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPiODNKb6Aj_Hl0plVRSsaUOeZomOnQsQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "371664777280-nh40s8iaqbtp6k8pcdopf0535jjmiim6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "371664777280-1vsgg9qn7o6oa303br8t2kqpuaenj1d9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kkch196247.app.mobile.pro"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

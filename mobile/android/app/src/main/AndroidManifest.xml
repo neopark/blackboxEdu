@@ -1,0 +1,144 @@
+<manifest
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  _="#MEMO, #PACKAGE_NAME"
+  package="com.kkch196247.app.mobile"
+  ____________________="">
+  <uses-permission android:name="android.permission.INTERNET" />
+  <!-- #MEMO, #MODULE: react-native-camera -->
+  <!-- #MEMO, #MODULE: react-native-permissions -->
+  <!-- #ADD: -->
+  <uses-permission android:name="android.permission.CAMERA" />
+  <!--  -->
+  <!-- #MEMO, #MODULE: react-native-bluetooth-serial-next-->
+  <!-- #MEMO, #MODULE: react-native-permissions -->
+  <!-- #ADD: -->
+  <uses-permission android:name="android.permission.BLUETOOTH" />
+  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <!--  -->
+  <!-- #MEMO, #MODULE: react-native-bluetooth-serial-next-->
+  <!-- #MEMO, #MODULE: react-native-wifi-reborn -->
+  <!-- #MEMO, #MODULE: react-native-permissions -->
+  <!-- #ADD: -->
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <!--  -->
+  <!-- #MEMO, #MODULE: react-native-qrcode-scanner -->
+  <!-- #MEMO, #MODULE: react-native-push-notification -->
+  <!-- #ADD: -->
+  <uses-permission android:name="android.permission.VIBRATE" />
+  <!--  -->
+  <!-- #MEMO, #MODULE: react-native-push-notification -->
+  <!-- #ADD: -->
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+  <!--  -->
+  <application
+    android:name=".MainApplication"
+    android:label="${name}"
+    android:icon="${icon}"
+    android:roundIcon="${roundIcon}"
+    android:allowBackup="false"
+    android:usesCleartextTraffic="true"
+    _="#MEMO, #BOOT_SPLASH"
+    __="#MEMO, #MODULE: react-native-bootsplash"
+    ___="#BEFORE:"
+    ____="android:theme='@style/AppTheme'"
+    _____="#AFTER:"
+    android:theme="${theme}"
+    _________________________________________=""
+    ______="#MEMO, #MODULE: react-native-wifi-reborn"
+    _______="#ADD:"
+    tools:replace="android:label"
+    ______________________________________________="">
+    <!-- #MEMO, #MODULE: @react-native-firebase/messaging -->
+    <!-- #ADD: -->
+    <meta-data
+      android:name="com.google.firebase.messaging.default_notification_color"
+      android:resource="${mainColor}"
+      tools:replace="android:resource" />
+    <!--  -->
+    <!-- #MEMO, #MODULE: react-native-push-notification -->
+    <!-- #ADD: -->
+    <meta-data
+      android:name="com.dieam.reactnativepushnotification.notification_color"
+      android:resource="${mainColor}" />
+    <meta-data
+      android:name="com.dieam.reactnativepushnotification.notification_foreground"
+      android:value="false" />
+    <receiver
+      android:exported="false"
+      android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />
+    <receiver
+      android:exported="false"
+      android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
+    <receiver
+      android:exported="false"
+      android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+        <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+        <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+      </intent-filter>
+    </receiver>
+    <service
+      android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService"
+      android:exported="false">
+      <intent-filter>
+        <action android:name="com.google.firebase.MESSAGING_EVENT" />
+      </intent-filter>
+    </service>
+    <!--  -->
+    <activity
+      android:name=".MainActivity"
+      android:label="${name}"
+      android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+      android:launchMode="singleTask"
+      android:windowSoftInputMode="adjustResize"
+      android:exported="true">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+      </intent-filter>
+    </activity>
+    <!-- #MEMO, #MODULE: @react-native-seoul/kakao-login -->
+    <!-- #ADD: -->
+    <activity
+      android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+      android:exported="true"
+      android:screenOrientation="portrait">
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data
+          android:host="oauth"
+          android:scheme="kakao${kakaoNativeAppKey}" />
+      </intent-filter>
+    </activity>
+    <!--  -->
+    <!-- #MEMO, #MODULE: @react-native-seoul/naver-login -->
+    <!-- #ADD: -->
+    <activity
+      android:name="com.nhn.android.naverlogin.ui.OAuthLoginActivity"
+      android:exported="true"
+      android:theme="@style/AppTheme"
+      android:screenOrientation="portrait"
+      tools:node="merge"
+      tools:replace="android:theme" />
+    <activity
+      android:name="com.nhn.android.naverlogin.ui.OAuthLoginInAppBrowserActivity"
+      android:exported="true"
+      android:theme="@style/AppTheme"
+      android:screenOrientation="portrait"
+      tools:node="merge"
+      tools:replace="android:theme" />
+    <activity
+      android:name="com.nhn.android.naverlogin.ui.OAuthCustomTabActivity"
+      android:exported="true"
+      android:theme="@style/AppTheme"
+      android:screenOrientation="portrait"
+      tools:node="merge"
+      tools:replace="android:theme" />
+    <!--  -->
+  </application>
+</manifest>

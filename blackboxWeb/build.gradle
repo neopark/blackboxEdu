@@ -1,0 +1,115 @@
+plugins {
+	id 'org.springframework.boot' version '2.6.3'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'com.saehan.elevblack'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	implementation 'org.bouncycastle:bcprov-jdk15on:1.69'
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5:2.11.3'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.3'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.3'
+
+    implementation 'net.coobird:thumbnailator:0.4.17'
+    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'commons-fileupload:commons-fileupload:1.4'
+
+	// https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api
+	implementation group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
+
+
+   	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
+  	implementation 'commons-io:commons-io:2.8.0'
+	// https://mvnrepository.com/artifact/org.checkerframework/checker-qual
+	implementation group: 'org.checkerframework', name: 'checker-qual', version: '3.19.0'
+ //implementation group: 'com.github.pagehelper', name: 'pagehelper', version: '5.2.1'
+	implementation 'com.github.pagehelper:pagehelper-spring-boot-starter:1.4.1'
+
+// https://mvnrepository.com/artifact/org.apache.clerezza.ext/org.json.simple
+implementation group: 'org.apache.clerezza.ext', name: 'org.json.simple', version: '0.4'
+
+}
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+
+
+// def frontendDir = "$projectDir/react"
+
+// sourceSets {
+// 	main {
+// 		resources {
+// 			srcDirs = ["$projectDir/src/main/resources"]
+// 		}
+// 	}
+// }
+
+// processResources {
+// 	dependsOn "copyReactBuildFiles"
+// }
+
+// task installReact(type: Exec) {
+// 	workingDir "$frontendDir"
+// 	inputs.dir "$frontendDir"
+// 	group = BasePlugin.BUILD_GROUP
+// 	if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+// 		commandLine "npm.cmd", "audit", "fix"
+// 		commandLine 'npm.cmd', 'install'
+// 	} else {
+// 		commandLine "npm", "audit", "fix"
+// 		commandLine 'npm', 'install'
+// 	}
+// }
+
+// task buildReact(type: Exec) {
+// 	dependsOn "installReact"
+// 	workingDir "$frontendDir"
+// 	inputs.dir "$frontendDir"
+// 	group = BasePlugin.BUILD_GROUP
+// 	if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+// 		commandLine "npm.cmd", "run-script", "build"
+// 	} else {
+// 		commandLine "npm", "run-script", "build"
+// 	}
+// }
+
+// task copyReactBuildFiles(type: Copy) {
+// 	dependsOn "buildReact"
+// 	from "$frontendDir/build"
+// 	into "$buildDir/resources/main/static"
+// }
+
